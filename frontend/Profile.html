@@ -26,6 +26,11 @@
             max-width: 100%;
             margin: 10px auto;
         }
+
+        .tag-badge {
+            margin-bottom: 5px;
+            /* якщо теги переносяться на новий рядок */
+        }
     </style>
 </head>
 
@@ -36,7 +41,8 @@
             <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-3 position-relative">
                 <img src="{% static 'img/teamnity_logo.png' %}" alt="Логотип Teamnity" class="logo-img">
                 <div class="list-group">
-                    <a href="./Profile.html" class="list-group-item list-group-item-action active">Мій профіль</a>
+                    <a href="{% url 'user_profile' username=request.user.username %}"
+                        class="list-group-item list-group-item-action active">Мій профіль</a>
                     <a href="./Search.html" class="list-group-item list-group-item-action">Пошук</a>
                     <a href="./Teams.html" class="list-group-item list-group-item-action">Команди</a>
                     <a href="./Friends.html" class="list-group-item list-group-item-action">Друзі</a>
@@ -45,11 +51,12 @@
 
                 <div class="profile-section position-absolute bottom-0 start-0 w-100 p-3">
                     <div class="d-flex align-items-center">
-                        <a href="./Profile.html" class="d-flex align-items-center text-decoration-none text-dark">
+                        <a href="{% url 'user_profile' username=request.user.username %}"
+                            class="d-flex align-items-center text-decoration-none text-dark">
                             <img src="https://www.w3schools.com/howto/img_avatar.png" style="height:70px"
                                 class="rounded-circle" alt="Фото мого профілю">
                             <div class="ms-3 profile-info">
-                                <h5 class="mb-0">Username</h5>
+                                <h5 class="mb-0">{{ request.user.username }}</h5>
                             </div>
                         </a>
                     </div>
@@ -57,22 +64,46 @@
             </nav>
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+                {% if is_owner %}
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h2>Мій профіль</h2>
-                    <a href="./Profile editing.html" class="btn btn-outline-primary">
-                        Редагувати <i class="fa-solid fa-pen"></i>
-                    </a>
+                    <div class="d-flex gap-2">
+                        <a href="./change-password.html" class="btn btn-outline-secondary">
+                            Зміна паролю <i class="fa-solid fa-lock"></i>
+                        </a>
+                        <!--<a href="./Profile editing.html" class="btn btn-outline-primary">
+                            Редагувати <i class="fa-solid fa-pen"></i>
+                        </a>-->
+                        <a href="{% url 'profile_edit' %}" class="btn btn-outline-primary">
+                            Редагувати <i class="fa-solid fa-pen"></i>
+                        </a>
+                    </div>
                 </div>
+                {% else %}
+                <h2>Профіль користувача: {{ profile_user.username }}</h2>
+                {% endif %}
 
                 <div class="card p-4 mb-3">
                     <div class="d-flex align-items-start">
-                        <img src="https://www.w3schools.com/howto/img_avatar.png" alt="Фото мого профілю"
-                            class="profile-img me-4">
+                        <img src="{% if user_profile.profile_picture %}{{ user_profile.profile_picture.url }}{% else %}https://www.w3schools.com/howto/img_avatar.png{% endif %}"
+                            alt="Фото мого профілю" class="profile-img me-4">
 
                         <div>
                             <h4 class="mb-2">{{ profile_user.username }}</h4>
-                            <p class="mb-1">Ім'я користувача</p>
-                            <p class="mb-1"><i class="fa-solid fa-location-dot"></i> Місто, Країна</p>
+                            <p class="mb-1">
+                                {% if user_profile.full_name %}
+                                <i class="fa-solid fa-address-card"></i> {{ user_profile.full_name }}
+                                {% else %}
+                                <i class="fa-solid fa-address-card"></i> <span class="text-muted">Ім'я не вказано</span>
+                                {% endif %}
+                            </p>
+                            <p class="mb-1">
+                                {% if user_profile.location %}
+                                <i class="fa-solid fa-location-dot"></i> {{ user_profile.location }}
+                                {% else %}
+                                <i class="fa-solid fa-location-dot"></i> <span class="text-muted">Місто, Країна</span>
+                                {% endif %}
+                            </p>
                             <p class="mb-2"><i class="fa-solid fa-envelope"></i> {{ profile_user.email }}</p>
                         </div>
                     </div>
@@ -81,28 +112,60 @@
 
                     <div class="mb-3">
                         <h5>Опис</h5>
-                        Опис користувача.
+                        {% if user_profile.description %}
+                        {{ user_profile.description }}
+                        {% else %}
+                        <span class="text-muted">Опис профілю відсутній.</span>
+                        {% endif %}
                     </div>
 
                     <div class="mb-3">
                         <h5>Теги</h5>
-                        <span class="badge bg-primary me-1">#Програмування</span>
-                        <span class="badge bg-primary me-1">#Дизайн</span>
-                        <span class="badge bg-primary me-1">#Менеджмент</span>
+                        {% if user_profile.tags.all %}
+                        {% for tag in user_profile.tags.all %}
+                        <span class="badge bg-primary me-1 tag-badge">{{ tag.name }}</span>
+                        {% endfor %}
+                        {% else %}
+                        <span class="text-muted">Теги ще не додані.</span>
+                        {% endif %}
                     </div>
 
                     <div>
                         <h5>Зв'язок</h5>
-                        <i class="fa-brands fa-telegram"></i> <a href="https://t.me/telegram" target="_blank"
+                        {% if has_social_links %}
+                        {% if user_profile.telegram %}
+                        <i class="fa-brands fa-telegram"></i> <a href="{{ user_profile.telegram }}" target="_blank"
                             style="text-decoration: none">Telegram</a>
+                        {% endif %}
+                        {% if user_profile.discord %}
+                        <i class="fa-brands fa-discord"></i> <a href="{{ user_profile.discord }}" target="_blank"
+                            style="text-decoration: none">Discord</a>
+                        {% endif %}
+                        {% if user_profile.instagram %}
+                        <i class="fa-brands fa-instagram"></i> <a href="{{ user_profile.instagram }}" target="_blank"
+                            style="text-decoration: none">Instagram</a>
+                        {% endif %}
+                        {% if user_profile.github %}
+                        <i class="fa-brands fa-github"></i> <a href="{{ user_profile.github }}" target="_blank"
+                            style="text-decoration: none">GitHub</a>
+                        {% endif %}
+                        {% if user_profile.linkedin %}
+                        <i class="fa-brands fa-linkedin"></i> <a href="{{ user_profile.linkedin }}" target="_blank"
+                            style="text-decoration: none">LinkedIn</a>
+                        {% endif %}
+                        {% else %}
+                        <span class="text-muted">Посилання на месенджери відсутні.</span>
+                        {% endif %}
                     </div>
                 </div>
 
+                {% if is_owner %}
                 <form action="{% url 'logout' %}" method="post">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger">Вийти <i
                             class="fa-solid fa-right-from-bracket"></i></button>
                 </form>
+                {% endif %}
             </main>
         </div>
     </div>

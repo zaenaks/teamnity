@@ -4,3 +4,6 @@ env/
 
 # Python
 __pycache__/
+
+# User-uploaded media files
+media/
