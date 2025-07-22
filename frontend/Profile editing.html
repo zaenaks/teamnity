@@ -96,11 +96,6 @@
                                 </div>
                                 {% endif %}
                                 <br>
-                                <!--<div class="mb-3">
-                                    <label for="Name" class="form-label">Ім'я</label>
-                                    <input type="text" class="form-control" id="Name" value="User">
-                                </div>-->
-
                                 {{ form.location.label_tag }}
                                 {{ form.location }}
                                 {% if form.location.errors %}
@@ -111,12 +106,6 @@
                                 </div>
                                 {% endif %}
                                 <br>
-                                <!--<div class="mb-3">
-                                    <label for="cityCountry" class="form-label">Місто і країна</label>
-                                    <input type="text" class="form-control" id="cityCountry" value="Україна">
-                                </div>-->
-
-
                                 <div class="mb-3">
                                     <!-- ЗМІНА МОВИ <label for="language" class="form-label">Preferred Language</label>
                                     <select class="form-select" id="language">
@@ -132,12 +121,6 @@
                                         {% endfor %}
                                     </div>
                                     {% endif %}
-                                    <!--<label for="multiSelect" class="form-label">Теги</label>
-                                    <select id="multiSelect" class="form-select" style="max-width: 150px;" multiple>
-                                        <option value="1">Програмування</option>
-                                        <option value="2">Дизайн</option>
-                                        <option value="3">Менеджмент</option>
-                                    </select>-->
                                 </div>
 
                                 {{ form.description.label_tag }}
@@ -150,11 +133,6 @@
                                 </div>
                                 {% endif %}
                                 <br>
-                                <!--<div class="">
-                                    <label class="form-label">Опис</label>
-                                    <textarea class="form-control" rows="4">Опис профілю користувача</textarea>
-                                </div>-->
-
                             </div>
                             <div class="col-md-6">
                                 <h4>Зображення профілю</h4>
@@ -244,27 +222,6 @@
                                         <i class="fa-brands fa-linkedin"></i> <a href="{{ form.instance.linkedin }}"
                                             id="previewLinkedin" target="_blank" rel="noopener">Linkedin</a><br>
                                     </div>
-                                    <!--<input type="url" class="form-control mb-2" placeholder="https://t.me/ваше_ім'я"
-                                        id="telegramLink">
-                                    <input type="url" class="form-control mb-2"
-                                        placeholder="https://discordapp.com/users/вашID" id="discordLink">
-                                    <input type="url" class="form-control mb-2"
-                                        placeholder="https://instagram.com/ваше_ім'я" id="instagramLink">
-                                    <input type="url" class="form-control mb-2" placeholder="https://github.com/ваше_ім'я"
-                                        id="githubLink">
-                                    <input type="url" class="form-control mb-2" placeholder="https://linkedin.com/ваше_ім'я"
-                                        id="linkedinLink">
-                                    <div class="mt-2 socials">
-                                        <i class="fa-brands fa-telegram"></i> <a href="#" id="previewTelegram"
-                                            target="_blank" rel="noopener">Telegram</a><br>
-                                        <i class="fa-brands fa-discord"></i> <a href="#" id="previewDiscord" target="_blank"
-                                            rel="noopener">Discord</a><br>
-                                        <i class="fa-brands fa-instagram"></i> <a href="#" id="previewInstagram"
-                                            target="_blank" rel="noopener">Instagram</a><br>
-                                        <i class="fa-brands fa-github"></i> <a href="#" id="previewGithub" target="_blank"
-                                            rel="noopener">GitHub</a><br>
-                                        <i class="fa-brands fa-linkedin"></i> <a href="#" id="previewLinkedin"
-                                            target="_blank" rel="noopener">LinkedIn</a>-->
                                 </div>
                             </div>
 
@@ -276,47 +233,8 @@
                         </div>
                     </form>
                 </div>
-
-
-
-                <!--<div class="row mb-4">
-                <div class="col-md-6">
-                    <h4>Змінити пароль</h4>
-                    <div class="mb-3">
-                        <label for="currentPassword" class="form-label">Поточний пароль</label>
-                        <input type="password" class="form-control" id="currentPassword">
-                    </div>
-                    <div class="mb-3">
-                        <label for="newPassword" class="form-label">Новий пароль</label>
-                        <input type="password" class="form-control" id="newPassword">
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirmPassword" class="form-label">Підтвердіть новий пароль</label>
-                        <input type="password" class="form-control" id="confirmPassword">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <h4>Налаштування конфіденційності</h4>
-                    <div class="mb-1 form-check">
-                        <input type="checkbox" class="form-check-input" id="visibilityProfile" checked>
-                        <label class="form-check-label" for="visibilityProfile">Зробити профіль видимим для
-                            інших</label>
-                    </div>
-
-                    <div class="mb-3 form-check">
-                        <input type="checkbox" class="form-check-input" id="visibilityEmail" checked>
-                        <label class="form-check-label" for="visibilityEmail">Зробити пошту видимою для
-                            інших</label>
-                    </div>
-                </div>
-            </div>-->
-
-
-
             </main>
         </div>
-
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
@@ -355,9 +273,9 @@
                 document.getElementById('previewLinkedin').href = this.value;
             });
 
-            // Перегляд фото (питння ПЕРЕВІРИТИ НЕ ФАКТ ЩО ТРЕБА)
+            // Перегляд фото
             const profilePictureInput = document.getElementById('id_profile_picture'); // ID згенерований Django для profile_picture
-            const profilePictureDisplay = document.querySelector('.profile-img'); // Ваш img тег для відображення
+            const profilePictureDisplay = document.querySelector('.profile-img'); // img тег для відображення
 
             if (profilePictureInput && profilePictureDisplay) {
                 profilePictureInput.addEventListener('change', function (event) {
