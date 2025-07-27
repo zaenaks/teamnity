@@ -31,11 +31,10 @@ class RegisterUser(CreateView):
 
     def form_valid(self, form):
         self.object = form.save()
-        login(self.request, self.object)
         return super().form_valid(form)
     
     def get_success_url(self):
-        return reverse_lazy('user_profile', kwargs={'username': self.object.username})
+        return reverse_lazy('Sign in')
 
 
 

@@ -47,10 +47,10 @@
                 <div class="list-group">
                     <a href="{% url 'user_profile' username=request.user.username %}"
                         class="list-group-item list-group-item-action active">Мій профіль</a>
-                    <a href="./Search.html" class="list-group-item list-group-item-action">Пошук</a>
+                    <a href="{% url 'search' %}" class="list-group-item list-group-item-action">Пошук</a>
                     <a href="./Teams.html" class="list-group-item list-group-item-action">Команди</a>
-                    <a href="./Friends.html" class="list-group-item list-group-item-action">Друзі</a>
-                    <a href="./Invitation.html" class="list-group-item list-group-item-action">Запрошення</a>
+                    <!--<a href="./Friends.html" class="list-group-item list-group-item-action">Друзі</a>
+                    <a href="./Invitation.html" class="list-group-item list-group-item-action">Запрошення</a>-->
                 </div>
 
                 <div class="profile-section position-absolute bottom-0 start-0 w-100 p-3">

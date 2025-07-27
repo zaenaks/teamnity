@@ -43,18 +43,18 @@
                 <div class="list-group">
                     <a href="{% url 'user_profile' username=request.user.username %}"
                         class="list-group-item list-group-item-action active">Мій профіль</a>
-                    <a href="./Search.html" class="list-group-item list-group-item-action">Пошук</a>
+                    <a href="{% url 'search' %}" class="list-group-item list-group-item-action">Пошук</a>
                     <a href="./Teams.html" class="list-group-item list-group-item-action">Команди</a>
-                    <a href="./Friends.html" class="list-group-item list-group-item-action">Друзі</a>
-                    <a href="./Invitation.html" class="list-group-item list-group-item-action">Запрошення</a>
+                    <!--<a href="./Friends.html" class="list-group-item list-group-item-action">Друзі</a>
+                    <a href="./Invitation.html" class="list-group-item list-group-item-action">Запрошення</a>-->
                 </div>
 
                 <div class="profile-section position-absolute bottom-0 start-0 w-100 p-3">
                     <div class="d-flex align-items-center">
                         <a href="{% url 'user_profile' username=request.user.username %}"
                             class="d-flex align-items-center text-decoration-none text-dark">
-                            <img src="https://www.w3schools.com/howto/img_avatar.png" style="height:70px"
-                                class="rounded-circle" alt="Фото мого профілю">
+                            <img src="{% if user_profile.profile_picture %}{{ user_profile.profile_picture.url }}{% else %}https://www.w3schools.com/howto/img_avatar.png{% endif %}"
+                                style="height:70px" class="rounded-circle" alt="Фото мого профілю">
                             <div class="ms-3 profile-info">
                                 <h5 class="mb-0">{{ request.user.username }}</h5>
                             </div>
@@ -68,9 +68,9 @@
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h2>Мій профіль</h2>
                     <div class="d-flex gap-2">
-                        <a href="./change-password.html" class="btn btn-outline-secondary">
+                        <!--<a href="./change-password.html" class="btn btn-outline-secondary">
                             Зміна паролю <i class="fa-solid fa-lock"></i>
-                        </a>
+                        </a>-->
                         <a href="{% url 'profile_edit' %}" class="btn btn-outline-primary">
                             Редагувати <i class="fa-solid fa-pen"></i>
                         </a>
