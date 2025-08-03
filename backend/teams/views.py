@@ -59,6 +59,13 @@ class TeamListView(LoginRequiredMixin, ListView):
         context['all_tags'] = Tag.objects.all()
         context['current_query'] = self.request.GET.get('q', '')
         context['current_tags'] = self.request.GET.getlist('tags')
+        
+        if user.is_authenticated:
+            # Отримуємо ID команд, де користувач є членом
+            member_team_ids = TeamMembership.objects.filter(user=user).exclude(role='owner').values_list('team__id', flat=True)
+            context['user_member_of_team_ids'] = list(member_team_ids)
+        else:
+            context['user_member_of_team_ids'] = []
 
         return context
     

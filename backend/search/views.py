@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.db.models import Case, When, Value, IntegerField #  для анотації пріоритету
 from django.db.models.functions import Lower # для сортування без урахування регістру
 from accounts.models import UserProfile, Tag
-# from teams.models import TeamProfile
+from teams.models import Team
 
 User = get_user_model()
 
@@ -26,8 +26,7 @@ class SearchView(ListView):
             if search_type == '2':
                 return UserProfile.objects.none()
             elif search_type == '1':
-                # return TeamProfile.objects.none() # розкоментувати коли буде модель TeamProfile
-                return UserProfile.objects.none() # Тимчасовий заглушка
+                return Team.objects.none()
         
         # пошук користувачів
         if search_type == '2':
@@ -53,7 +52,25 @@ class SearchView(ListView):
         
         # пошук команд
         elif search_type == '1':
-            return UserProfile.objects.none()
+            queryset = Team.objects.filter(is_public=True)
+            if selected_tags_ids:
+                for tag_id in selected_tags_ids:
+                    queryset = queryset.filter(tags__id=tag_id)
+                queryset = queryset.distinct()
+            if query:
+                queryset = queryset.annotate(
+                    priority = Case(
+                        When(name__iexact = query, then = Value(0)), # 0 - точний збіг за назвою команди
+                        When(name__icontains = query,then = Value(1)), # 1 - частковий збіг за назвою команди
+                        default=Value(2),
+                        output_field=IntegerField()
+                    )
+                ).filter(
+                    Q(name__iexact=query) | Q(name__icontains = query)
+                ).order_by('priority', Lower('name'))
+            else:
+                queryset = queryset.order_by(Lower('name'))
+            return queryset
 
         return UserProfile.objects.none()
     

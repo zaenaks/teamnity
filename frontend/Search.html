@@ -151,9 +151,71 @@
                 {% endfor %}
                 <!--Команди-->
                 {% elif current_type == '1' %}
-                <div class="alert alert-info text-center mt-4" role="alert">
-                    Пошук команд наразі не підтримується.
-                </div>
+                {% for team in results %}
+                    <div class="card p-3 mb-2">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div class="d-flex align-items-start">
+                                <a href="{% url 'teams:team_profile' pk=team.pk %}"
+                                    class="d-flex align-items-start text-decoration-none text-dark">
+                                    <img src="{% if team.profile_picture %}{{ team.profile_picture.url }}{% else %}{% static 'img/user_logo.png' %}{% endif %}"
+                                        style="height:70px" class="rounded-circle" alt="Фото профілю команди">
+                                    <div class="ps-2">
+                                        <h5 class="mb-1">{{ team.name }}</h5>
+                                        <p class="mb-1">{% if team.location %}<i class="fa-solid fa-location-dot"></i> {{ team.location }}{% endif %}</p>
+                                    </div>
+                                </a>
+                            </div>
+                            {% if team.owner == request.user %}
+                                <a href="{% url 'teams:team_profile' pk=team.pk %}" class="btn btn-primary btn-sm" title="Керувати командою">
+                                    <i class="fa-solid fa-gear"></i> Керувати
+                                </a>
+                            {% elif team.pk in user_member_of_team_ids %}
+                                <form action="{% url 'teams:leave_team' pk=team.pk %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-warning"><i class="fa-solid fa-right-from-bracket"></i> Покинути команду</button>
+                                </form>
+                            {% else %}
+                                <form action="{% url 'teams:join_team' pk=team.pk %}" method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-users"></i> Приєднатись</button>
+                                </form>
+                            {% endif %}
+                        </div>
+                        <p>{{ team.description|default:"Опис відсутній." }}</p>
+
+                        <div class="mb-1">
+                            {% for tag in team.tags.all %}
+                            <span class="badge bg-primary me-1">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {% if team.telegram or team.discord or team.instagram or team.github or team.linkedin %}
+                                {% if team.telegram %}
+                                <i class="fa-brands fa-telegram"></i> <a href="{{ team.telegram }}" target="_blank"
+                                    style="text-decoration: none">Telegram</a>
+                                {% endif %}
+                                {% if team.discord %}
+                                <i class="fa-brands fa-discord"></i> <a href="{{ team.discord }}" target="_blank"
+                                    style="text-decoration: none">Discord</a>
+                                {% endif %}
+                                {% if team.instagram %}
+                                <i class="fa-brands fa-instagram"></i> <a href="{{ team.instagram }}" target="_blank"
+                                    style="text-decoration: none">Instagram</a>
+                                {% endif %}
+                                {% if team.github %}
+                                <i class="fa-brands fa-github"></i> <a href="{{ team.github }}" target="_blank"
+                                    style="text-decoration: none">GitHub</a>
+                                {% endif %}
+                                {% if team.linkedin %}
+                                <i class="fa-brands fa-linkedin"></i> <a href="{{ team.linkedin }}" target="_blank"
+                                    style="text-decoration: none">LinkedIn</a>
+                                {% endif %}
+                            {% else %}
+                                <span class="text-muted">Посилання на месенджери відсутні.</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
                 {% endif %}
                 {% endif %}
 
