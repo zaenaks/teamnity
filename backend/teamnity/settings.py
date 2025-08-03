@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
     'search.apps.SearchConfig',
+    'teams.apps.TeamsConfig',
 ]
 
 MIDDLEWARE = [

@@ -44,7 +44,7 @@ class UserProfileEditForm(forms.ModelForm):
 
     tags = forms.ModelMultipleChoiceField(
         queryset = Tag.objects.all(),
-        widget = forms.SelectMultiple(attrs={'class': 'form-select', 'multiple': 'multiple'}),
+        widget = forms.SelectMultiple(attrs={'class': 'form-select'}),
         label = "Теги",
         required = False
     )

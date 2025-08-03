@@ -32,7 +32,7 @@
                     <a href="{% url 'user_profile' username=request.user.username %}"
                         class="list-group-item list-group-item-action">Мій профіль</a>
                     <a href="{% url 'search' %}" class="list-group-item list-group-item-action active">Пошук</a>
-                    <a href="./Teams.html" class="list-group-item list-group-item-action">Команди</a>
+                    <a href="{% url 'teams:teams' %}" class="list-group-item list-group-item-action">Команди</a>
                     <!--<a href="./Friends.html" class="list-group-item list-group-item-action">Друзі</a>
                     <a href="./Invitation.html" class="list-group-item list-group-item-action">Запрошення</a>-->
                 </div>
@@ -41,7 +41,7 @@
                     <div class="d-flex align-items-center">
                         <a href="{% url 'user_profile' username=request.user.username %}"
                             class="d-flex align-items-center text-decoration-none text-dark">
-                            <img src="{% if request.user.userprofile.profile_picture %}{{ request.user.userprofile.profile_picture.url }}{% else %}https://www.w3schools.com/howto/img_avatar.png{% endif %}"
+                            <img src="{% if request.user.userprofile.profile_picture %}{{ request.user.userprofile.profile_picture.url }}{% else %}{% static 'img/user_logo.png' %}{% endif %}"
                                 style="height:70px" class="rounded-circle" alt="Фото мого профілю">
                             <div class="ms-3 profile-info">
                                 <h5 class="mb-0">{{ request.user.username }}</h5>
@@ -101,7 +101,7 @@
                         <div class="d-flex align-items-start">
                             <a href="{% url 'user_profile' username=user_profile.user.username %}"
                                 class="d-flex align-items-start text-decoration-none text-dark">
-                                <img src="{% if user_profile.profile_picture %}{{ user_profile.profile_picture.url}}{% else %}https://www.w3schools.com/howto/img_avatar.png{% endif %}"
+                                <img src="{% if user_profile.profile_picture %}{{ user_profile.profile_picture.url}}{% else %}{% static 'img/user_logo.png' %}{% endif %}"
                                     style="height:70px" class="rounded-circle" alt="Фото профілю користувача">
                                 <div class="ps-2">
                                     <h5 class="mb-1">{{ user_profile.user.username }}</h5>

@@ -2,19 +2,16 @@
 <html lang="uk">
 
 <head>
+    {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Команди - Teamnity</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/all.min.css">
-    <link rel="icon" href="img/favicon.png" type="image/png">
+    <link rel="stylesheet" href="{% static 'css/all.min.css' %}">
+    <link rel="icon" href="{% static 'img/favicon.png' %}" type="image/png">
     <style>
         .sidebar {
             min-height: 100vh;
-        }
-
-        .w-33{
-            width: 33.33%;
         }
 
         .logo-img {
@@ -28,21 +25,21 @@
     <div class="container-fluid">
         <div class="row">
             <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-3 position-relative">
-                <img src="img/teamnity_logo.png" alt="Логотип Teamnity" class="logo-img">
+                <img src="{% static 'img/teamnity_logo.png' %}" alt="Логотип Teamnity" class="logo-img">
                 <div class="list-group">
-                    <a href="./Profile.html" class="list-group-item list-group-item-action">Мій профіль</a>
-                    <a href="./Search.html" class="list-group-item list-group-item-action">Пошук</a>
-                    <a href="./Teams.html" class="list-group-item list-group-item-action active">Команди</a>
-                    <a href="./Friends.html" class="list-group-item list-group-item-action">Друзі</a>
-                    <a href="./Invitation.html" class="list-group-item list-group-item-action">Запрошення</a>
+                    <a href="{% url 'user_profile' username=request.user.username %}" class="list-group-item list-group-item-action">Мій профіль</a>
+                    <a href="{% url 'search' %}" class="list-group-item list-group-item-action">Пошук</a>
+                    <a href="{% url 'teams:teams' %}" class="list-group-item list-group-item-action active">Команди</a>
+                    <!--<a href="./Friends.html" class="list-group-item list-group-item-action">Друзі</a>
+                    <a href="./Invitation.html" class="list-group-item list-group-item-action">Запрошення</a>-->
                 </div>
 
                 <div class="profile-section position-absolute bottom-0 start-0 w-100 p-3">
                     <div class="d-flex align-items-center">
-                        <a href="./Profile.html" class="d-flex align-items-center text-decoration-none text-dark">
-                            <img src="https://www.w3schools.com/howto/img_avatar.png" style="height:70px" class="rounded-circle" alt="Фото мого профілю">
+                        <a href="{% url 'user_profile' username=request.user.username %}" class="d-flex align-items-center text-decoration-none text-dark">
+                            <img src="{% if request.user.userprofile.profile_picture %}{{ request.user.userprofile.profile_picture.url }}{% else %}{% static 'img/user_logo.png' %}{% endif %}" style="height:70px" class="rounded-circle" alt="Фото мого профілю">
                             <div class="ms-3 profile-info">
-                                <h5 class="mb-0">Username</h5>
+                                <h5 class="mb-0">{{ request.user.username }}</h5>
                             </div>
                         </a>
                     </div>
@@ -51,56 +48,129 @@
 
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
 
+                {% if messages %}
+                    <ul class="messages list-unstyled">
+                        {% for message in messages %}
+                            <li class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
                 <!-- Панель вкладок -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <ul class="nav nav-tabs flex-grow-1">
-                        <li class="nav-item w-33 text-center">
+                        <li class="nav-item w-50 text-center">
                             <a class="nav-link active" id="teams-tab" data-bs-toggle="tab" href="#teamList">Команди</a>
                         </li>
-                        <li class="nav-item w-33 text-center">
+                        <!--<li class="nav-item w-33 text-center">
                             <a class="nav-link" id="sentRequests-tab" data-bs-toggle="tab" href="#sentRequests">Надіслані запити</a>
-                        </li>
-                        <li class="nav-item w-33 text-center">
+                        </li>-->
+                        <li class="nav-item w-50 text-center">
                             <a class="nav-link" id="myTeams-tab" data-bs-toggle="tab" href="#myTeamsList">Мої команди</a>
                         </li>
                     </ul>
-                    <a href="./Create team.html" class="btn btn-success ms-3">Створити команду</a>
+                    <a href="{% url 'teams:create_team' %}" class="btn btn-success ms-3">Створити команду</a>
                 </div>
 
                 <div class="tab-content">
                     <!--Вкладка "Команди"-->
                     <div class="tab-pane fade show active" id="teamList">
-                        
-                        <div class="card p-3 mb-3">
-                            <div class="d-flex justify-content-between align-items-start">
+                        <div class="row">
+                            {% for team in all_user_teams_except_owned %}
+                                    <div class="card p-3 team-card mb-3">
+                                        <div class="d-flex justify-content-between align-items-start">
 
-                                <div class="d-flex align-items-start">
-                                    <img src="https://upload.wikimedia.org/wikipedia/uk/thumb/7/73/UEFA_Europa_League_2024.png/250px-UEFA_Europa_League_2024.png" style="height:70px" class="rounded-circle" alt="Фото профілю команди">
-                                    <div class="ps-2">
-                                        <h5 class="mb-2">Назва команди</h5>
-                                        <p class="mb-2"><i class="fa-solid fa-location-dot"></i> Місто, Країна</p>
+                                            <div class="d-flex align-items-start">
+                                                <a href="{% url 'teams:team_profile' pk=team.pk %}" class="d-flex align-items-start text-decoration-none text-dark">
+                                                    <img src="{% if team.profile_picture %}{{ team.profile_picture.url }}{% else %}{% static 'img/team_logo.png' %}{% endif %}" style="height:70px" class="rounded-circle" alt="Фото профілю команди">
+                                                    <div class="ps-2">
+                                                        <h5 class="mb-2">{{ team.name }}</h5>
+                                                        {% if team.location %}
+                                                            <p class="mb-2"><i class="fa-solid fa-location-dot"></i> {{ team.location }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <form action="{% url 'teams:leave_team' pk=team.pk %}" method="post" class="ms-2">
+                                                {% csrf_token %}
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Покинути команду">
+                                                    <i class="fa-solid fa-right-from-bracket"></i>
+                                                </button>
+                                            </form>
+
+                                        </div>
+                                        {% if team.description %}
+                                            <p class="mt-2">{{ team.description }}</p>
+                                        {% endif %}
+
+                                        {% if team.tags.all %}
+                                            <div class="mb-1">
+                                                {% for tag in team.tags.all %}
+                                                    <span class="badge bg-primary me-1">{{ tag.name }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        {% if team.telegram or team.discord or team.instagram or team.github or team.linkedin %}
+                                            <div class="social-links mt-2">
+                                                {% if team.telegram %}<i class="fa-brands fa-telegram"></i> <a href="{{ team.telegram }}" target="_blank" rel="noopener" class="text-decoration-none">Telegram</a>{% endif %}
+                                                {% if team.discord %}<i class="fa-brands fa-discord"></i> <a href="{{ team.discord }}" target="_blank" rel="noopener" class="text-decoration-none">Discord</a>{% endif %}
+                                                {% if team.instagram %}<i class="fa-brands fa-instagram"></i> <a href="{{ team.instagram }}" target="_blank" rel="noopener" class="text-decoration-none">Instagram</a>{% endif %}
+                                                {% if team.github %}<i class="fa-brands fa-github"></i> <a href="{{ team.github }}" target="_blank" rel="noopener" class="text-decoration-none">GitHub</a>{% endif %}
+                                                {% if team.linkedin %}<i class="fa-brands fa-linkedin"></i> <a href="{{ team.linkedin }}" target="_blank" rel="noopener" class="text-decoration-none">LinkedIn</a>{% endif %}
+                                            </div>
+                                        {% endif %}
                                     </div>
-                                </div>
-                                <button type="button" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket"></i></button>
-
-                            </div>
-                            <p>Опис команди.</p>
-
-                            <div class="mb-1">
-                                <span class="badge bg-primary me-1">#Футбол</span>
-                                <span class="badge bg-primary me-1">#Спорт</span>
-                                <span class="badge bg-primary me-1">#Європа</span>
-                                <span class="badge bg-primary me-1">#Турнір</span>
-                            </div>
-                            <div>
-                                <i class="fa-brands fa-telegram"></i> <a href="https://t.me/telegram" target="_blank" style="text-decoration: none">Telegram</a>
-                            </div>
+                            {% empty %}
+                                <p class="text-muted ms-3">Ви ще не є членом жодної команди (крім тих, які ви створили).</p>
+                            {% endfor %}
                         </div>
 
+                        {% if is_paginated %}
+                            <nav aria-label="Page navigation for teams" class="mt-3">
+                                <ul class="pagination justify-content-center">
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link" aria-hidden="true">&laquo;</span>
+                                        </li>
+                                    {% endif %}
+
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                            <li class="page-item active" aria-current="page"><span class="page-link">{{ num }}</span></li>
+                                        {% elif num == 1 or num == page_obj.paginator.num_pages %}
+                                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                        {% elif num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+                                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link" aria-hidden="true">&raquo;</span>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
                     </div>
 
                     <!--Вкладка "Надіслані запити"-->
-                    <div class="tab-pane fade" id="sentRequests">
+                    <!--<div class="tab-pane fade" id="sentRequests">
 
                         <div class="card p-3 mb-3">
                             <div class="d-flex justify-content-between align-items-start">
@@ -130,37 +200,93 @@
                             </div>
                         </div>
 
-                    </div>
+                    </div>-->
 
                     <!--Вкладка "Мої команди"-->
                     <div class="tab-pane fade" id="myTeamsList">
+                        <div class="row">
+                            {% for team in owned_teams_page_obj %}
+                                    <div class="card p-3 team-card mb-3">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div class="d-flex align-items-start">
+                                                <a href="{% url 'teams:team_profile' pk=team.pk %}" class="d-flex align-items-start text-decoration-none text-dark">
+                                                    <img src="{% if team.profile_picture %}{{ team.profile_picture.url }}{% else %}{% static 'img/team_logo.png' %}{% endif %}" style="height:70px" class="rounded-circle" alt="Фото профілю команди">
+                                                    <div class="ps-2">
+                                                        <h5 class="mb-2">{{ team.name }}</h5>
+                                                        {% if team.location %}
+                                                            <p class="mb-2"><i class="fa-solid fa-location-dot"></i> {{ team.location }}</p>
+                                                        {% endif %}
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <a href="{% url 'teams:team_profile' pk=team.pk %}" class="btn btn-primary btn-sm" title="Керувати командою">
+                                                <i class="fa-solid fa-gear"></i> Керувати
+                                            </a>
 
-                        <div class="card p-3 mb-3 team-card" data-link="./Team profile.html">
-                            <div class="d-flex justify-content-between align-items-start">
-
-                                <div class="d-flex align-items-start">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/%D0%A4%D0%9A_%D0%A8%D0%B0%D1%85%D1%82%D0%B0%D1%80_%D0%94%D0%BE%D0%BD%D0%B5%D1%86%D1%8C%D0%BA.svg/250px-%D0%A4%D0%9A_%D0%A8%D0%B0%D1%85%D1%82%D0%B0%D1%80_%D0%94%D0%BE%D0%BD%D0%B5%D1%86%D1%8C%D0%BA.svg.png" style="height:70px" class="rounded-circle" alt="Фото профілю команди">
-                                    <div class="ps-2">
-                                        <h5 class="mb-2">Назва команди</h5>
-                                        <p class="mb-2"><i class="fa-solid fa-location-dot"></i> Місто, Країна</p>
+                                        </div>
+                                        {% if team.description %}
+                                            <p>{{ team.description }}</p>
+                                        {% endif %}
+                                        {% if team.tags.all %}
+                                            <div class="mb-2">
+                                                {% for tag in team.tags.all %}
+                                                    <span class="badge bg-primary me-1">{{ tag.name }}</span>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
+                                        {% if team.telegram or team.discord or team.instagram or team.github or team.linkedin %}
+                                            <div class="social-links">
+                                                {% if team.telegram %}<i class="fa-brands fa-telegram"></i> <a href="{{ team.telegram }}" target="_blank" rel="noopener" class="text-decoration-none">Telegram</a>{% endif %}
+                                                {% if team.discord %}<i class="fa-brands fa-discord"></i> <a href="{{ team.discord }}" target="_blank" rel="noopener" class="text-decoration-none">Discord</a>{% endif %}
+                                                {% if team.instagram %}<i class="fa-brands fa-instagram"></i> <a href="{{ team.instagram }}" target="_blank" rel="noopener" class="text-decoration-none">Instagram</a>{% endif %}
+                                                {% if team.github %}<i class="fa-brands fa-github"></i> <a href="{{ team.github }}" target="_blank" rel="noopener" class="text-decoration-none">GitHub</a>{% endif %}
+                                                {% if team.linkedin %}<i class="fa-brands fa-linkedin"></i> <a href="{{ team.linkedin }}" target="_blank" rel="noopener" class="text-decoration-none">LinkedIn</a>{% endif %}
+                                            </div>
+                                        {% endif %}
                                     </div>
-                                </div>
-                                <button type="button" class="btn btn-danger"><i class="fa-solid fa-right-from-bracket"></i></button>
-
-                            </div>
-                            <p>Опис команди.</p>
-
-                            <div class="mb-1">
-                                <span class="badge bg-primary me-1">#Футбол</span>
-                                <span class="badge bg-primary me-1">#Спорт</span>
-                                <span class="badge bg-primary me-1">#Україна</span>
-                                <span class="badge bg-primary me-1">#ФК</span>
-                            </div>
-                            <div>
-                                <i class="fa-brands fa-telegram"></i> <a href="https://t.me/telegram" target="_blank" style="text-decoration: none">Telegram</a>
-                            </div>
+                            {% empty %}
+                                <p class="text-muted ms-3">Ви ще не створили жодної команди.</p>
+                            {% endfor %}
                         </div>
+                        {% if owned_teams_is_paginated %}
+                            <nav aria-label="Page navigation for my teams" class="mt-3">
+                                <ul class="pagination justify-content-center">
+                                    {% if owned_teams_page_obj.has_previous %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?my_teams_page={{ owned_teams_page_obj.previous_page_number }}" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link" aria-hidden="true">&laquo;</span>
+                                        </li>
+                                    {% endif %}
 
+                                    {% for num in owned_teams_page_obj.paginator.page_range %}
+                                        {% if owned_teams_page_obj.number == num %}
+                                            <li class="page-item active" aria-current="page"><span class="page-link">{{ num }}</span></li>
+                                        {% elif num == 1 or num == owned_teams_page_obj.paginator.num_pages %}
+                                            <li class="page-item"><a class="page-link" href="?my_teams_page={{ num }}">{{ num }}</a></li>
+                                        {% elif num >= owned_teams_page_obj.number|add:"-2" and num <= owned_teams_page_obj.number|add:"2" %}
+                                            <li class="page-item"><a class="page-link" href="?my_teams_page={{ num }}">{{ num }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if owned_teams_page_obj.has_next %}
+                                        <li class="page-item">
+                                            <a class="page-link" href="?my_teams_page={{ owned_teams_page_obj.next_page_number }}" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link" aria-hidden="true">&raquo;</span>
+                                        </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -170,15 +296,37 @@
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
     <script>
-    document.querySelectorAll('.team-card').forEach(card => {
-        card.addEventListener('click', function(e) {
-            if (e.target.closest('a') || e.target.closest('button')) return;
+        document.addEventListener('DOMContentLoaded', function () {
+            var triggerTabList = [].slice.call(document.querySelectorAll('#teams-tab, #myTeams-tab'))
+            triggerTabList.forEach(function (triggerEl) {
+                var tabTrigger = new bootstrap.Tab(triggerEl)
 
-            window.location.href = this.getAttribute('data-link');
+                triggerEl.addEventListener('click', function (event) {
+                    event.preventDefault()
+                    tabTrigger.show()
+                })
+            });
+
+            var someTabTriggerEl = document.querySelector('#teams-tab')
+            if (someTabTriggerEl) {
+                var tab = new bootstrap.Tab(someTabTriggerEl)
+                
+                var storedTab = localStorage.getItem('activeTeamTab');
+                if (storedTab) {
+                    var tabToActivate = document.querySelector(storedTab);
+                    if (tabToActivate) {
+                        new bootstrap.Tab(tabToActivate).show();
+                    }
+                }
+
+                document.querySelectorAll('a[data-bs-toggle="tab"]').forEach(function(tabLink) {
+                    tabLink.addEventListener('shown.bs.tab', function (event) {
+                        localStorage.setItem('activeTeamTab', event.target.getAttribute('href'));
+                    });
+                });
+            }
         });
-    });
-</script>
-
+    </script>
 </body>
 
 </html>

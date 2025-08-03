@@ -7,3 +7,7 @@ __pycache__/
 
 # User-uploaded media files
 media/
+
+# Unused frontend templates
+frontend/Friends.html
+frontend/Invitation.html
