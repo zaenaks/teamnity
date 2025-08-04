@@ -1,0 +1,1 @@
+web: gunicorn teamnity.wsgi:application --log-file -
