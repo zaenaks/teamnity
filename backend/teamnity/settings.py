@@ -159,8 +159,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_collected')
 
 LOGOUT_REDIRECT_URL = 'start'
 
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
