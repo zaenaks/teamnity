@@ -24,7 +24,7 @@ class TeamForm(forms.ModelForm):
             'description': 'Опис',
             'profile_picture': 'Зображення команди',
             'is_public': 'Зробити команду видимою для інших',
-            'is_email_public': 'Зробити пошту команди видимою для інших',
+            'is_email_public': 'Зробити пошту команди видимою',
         }
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
