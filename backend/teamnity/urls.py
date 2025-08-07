@@ -32,6 +32,3 @@ if settings.DEBUG:
     # Розробка: статика з STATICFILES_DIRS (DEBUG=True)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-else:
-    # Продакшен: статика з STATIC_ROOT (після collectstatic)  (DEBUG=False)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
