@@ -15,26 +15,26 @@ class RegisterUserForm(UserCreationForm):
 
     class Meta:
         model = get_user_model()
-        fields = ['username', 'email', 'password1', 'password2']
+        fields = ['username', 'password1', 'password2']
         labels = {
             'username': 'Логін',
-            'email': 'Пошта',
         }
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'password1': forms.PasswordInput(attrs={'class': 'form-control'}),
             'password2': forms.PasswordInput(attrs={'class': 'form-control'}),
         }
 
-    def clean_email(self):
+    """def clean_email(self):
         email = self.cleaned_data['email']
         if get_user_model().objects.filter(email=email).exists():
             raise forms.ValidationError("Користувач з таким email вже існує.")
-        return email
+        return email"""
     
 
 class UserProfileEditForm(forms.ModelForm):
+    email = forms.EmailField(label="Адреса електронної пошти", required=False, 
+                             widget=forms.EmailInput(attrs={'class': 'form-control'}))
     full_name = forms.CharField(label="Ім'я", max_length=100, required=False, 
                                 widget=forms.TextInput(attrs={'class': 'form-control'}))
     location = forms.CharField(label="Місто і країна", max_length=100, required=False, 
@@ -67,3 +67,19 @@ class UserProfileEditForm(forms.ModelForm):
         model = UserProfile
         fields = ['full_name', 'location', 'description', 'profile_picture', 'tags',
                   'telegram', 'discord', 'instagram', 'github', 'linkedin']
+
+    # заповнює поле email
+    def __init__(self, *args, **kwargs):    
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.user:
+            self.fields['email'].initial = self.instance.user.email
+            
+    # зберігає email
+    def save(self, commit=True):
+        user_profile = super().save(commit=False)
+        user = user_profile.user
+        user.email = self.cleaned_data.get('email', user.email)
+        if commit:
+            user.save()
+            user_profile.save()
+        return user_profile

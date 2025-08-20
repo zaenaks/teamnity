@@ -80,12 +80,17 @@
                                     <input type="text" class="form-control" id="login"
                                         value="{{ request.user.username }}" readonly>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Адреса електронної пошти</label>
-                                    <input type="email" class="form-control" id="email" value="{{ request.user.email }}"
-                                        readonly>
-                                </div>
 
+                                {{ form.email.label_tag }}
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger small">
+                                        {% for error in form.email.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                
                                 {{ form.full_name.label_tag }}
                                 {{ form.full_name }}
                                 {% if form.full_name.errors %}
