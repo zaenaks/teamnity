@@ -71,5 +71,6 @@ class UpdateUserView(LoginRequiredMixin, UpdateView):
         # created - True якщо об'єкт user_profile щойно був створений, False - якщо об'єкт вже існував і просто був отриманий
         return user_profile
     
-    def get_success_url(self):
-        return reverse_lazy('user_profile', kwargs={'username': self.object.user.username})
+    def form_valid(self, form):
+        self.object = form.save()
+        return redirect('user_profile', username=self.object.user.username)
