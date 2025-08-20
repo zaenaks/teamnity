@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from cloudinary.models import CloudinaryField
 
 
 # Create your models here.
@@ -17,7 +18,7 @@ class UserProfile(models.Model):
     location = models.CharField(max_length=100, blank=True, null=True) # Якщо blank=True значить поле не обов'язкове для заповнення
     description = models.TextField(blank=True, null=True)
 
-    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    profile_picture = CloudinaryField('profile_picture', blank=True, null=True)
 
     tags = models.ManyToManyField(Tag, blank=True)
 
