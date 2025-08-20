@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from accounts.models import Tag
+from cloudinary.models import CloudinaryField
 
 # Create your models here.
 User = get_user_model()
@@ -12,7 +13,7 @@ class Team(models.Model):
     location = models.CharField(max_length=100, blank=True, null=True)
     description = models.TextField(blank=True, null=True)
 
-    profile_picture = models.ImageField(upload_to='team_pics/', blank=True, null=True)
+    profile_picture = CloudinaryField('team_picture', blank=True, null=True)
 
     tags = models.ManyToManyField(Tag, blank=True)
 
