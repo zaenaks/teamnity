@@ -4,7 +4,7 @@ from django.db.models import Q
 from django.db.models import Case, When, Value, IntegerField #  для анотації пріоритету
 from django.db.models.functions import Lower # для сортування без урахування регістру
 from accounts.models import UserProfile, Tag
-from teams.models import Team
+from teams.models import Team, TeamMembership
 
 User = get_user_model()
 
@@ -76,6 +76,13 @@ class SearchView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+
+        if self.request.user.is_authenticated:
+            member_teams = TeamMembership.objects.filter(user=self.request.user).values_list('team__id', flat=True)
+            context['user_member_of_team_ids'] = list(member_teams)
+        else:
+            context['user_member_of_team_ids'] = []
+            
         context['all_tags'] = Tag.objects.all()
         context['current_query'] = self.request.GET.get('q', '')
         context['current_type'] = self.request.GET.get('type', '')
