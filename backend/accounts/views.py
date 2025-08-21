@@ -73,4 +73,5 @@ class UpdateUserView(LoginRequiredMixin, UpdateView):
     
     def form_valid(self, form):
         self.object = form.save()
+        form.save_m2m()
         return redirect('user_profile', username=self.object.user.username)
