@@ -101,7 +101,13 @@
                                 <i class="fa-solid fa-location-dot"></i> <span class="text-muted">Місто, Країна</span>
                                 {% endif %}
                             </p>
-                            <p class="mb-2"><i class="fa-solid fa-envelope"></i> {{ profile_user.email }}</p>
+                            <p class="mb-2">
+                                {% if profile_user.email %}
+                                <i class="fa-solid fa-envelope"></i> {{ profile_user.email }}
+                                {% else %}
+                                <i class="fa-solid fa-envelope"></i> <span class="text-muted">Пошта не вказана</span>
+                                {% endif %}
+                            </p>
                         </div>
                     </div>
 
